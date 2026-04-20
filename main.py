@@ -1,5 +1,6 @@
 import sqlite3
-#Sorensen-Dice Benzerligi
+
+# Sorensen-Dice Benzerligi
 def sorensen_dice_benzerligi(metin1, metin2):
     # Kucuk harfe cevir
     m1 = metin1.lower()
@@ -9,11 +10,11 @@ def sorensen_dice_benzerligi(metin1, metin2):
     if len(m1) < 2 or len(m2) < 2:
         return 1.0 if m1 == m2 else 0.0
 
-    # Metni ikili harf gruplarına (bi-gram) ayir, kume oluşstur
+    # Metni ikili harf gruplarına (bi-gram) ayir, kume olustur
     kume1 = set(m1[i:i+2] for i in range(len(m1)-1))
     kume2 = set(m2[i:i+2] for i in range(len(m2)-1))
 
-    # Ortak ikili grup sayısı
+    # Ortak ikili grup sayisi
     kesisim_sayisi = len(kume1.intersection(kume2))
 
     # Formul: (2 * kesisim_sayisi) / (kume1 + kume2)
@@ -26,11 +27,13 @@ def ana_program():
     baglanti = sqlite3.connect("dice_karsilastirma.db")
     imlec = baglanti.cursor()
 
-    # SQLite den oku ekrana yaz (rowid ile son ekleneni bul)
     imlec.execute('''
-                  SELECT metin1, metin2, benzerlik_orani
-                  FROM MetinBenzerlik
-                  ORDER BY rowid DESC LIMIT 1
+                  CREATE TABLE IF NOT EXISTS MetinBenzerlik
+                  (
+                      metin1 TEXT,
+                      metin2 TEXT,
+                      benzerlik_orani REAL
+                  )
                   ''')
 
     print("--- Sørensen-Dice Metin Benzerlik Hesaplayıcı ---")
@@ -47,11 +50,10 @@ def ana_program():
                   ''', (m1_girdi, m2_girdi, oran))
     baglanti.commit()
 
-    # SQLite den oku ekrana yaz
     imlec.execute('''
                   SELECT metin1, metin2, benzerlik_orani
                   FROM MetinBenzerlik
-                  ORDER BY id DESC LIMIT 1
+                  ORDER BY rowid DESC LIMIT 1
                   ''')
     son_kayit = imlec.fetchone()
 
