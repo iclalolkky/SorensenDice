@@ -26,21 +26,11 @@ def ana_program():
     baglanti = sqlite3.connect("dice_karsilastirma.db")
     imlec = baglanti.cursor()
 
+    # SQLite den oku ekrana yaz (rowid ile son ekleneni bul)
     imlec.execute('''
-                  CREATE TABLE IF NOT EXISTS MetinBenzerlik
-                  (
-                      id
-                      INTEGER
-                      PRIMARY
-                      KEY
-                      AUTOINCREMENT,
-                      metin1
-                      TEXT,
-                      metin2
-                      TEXT,
-                      benzerlik_orani
-                      REAL
-                  )
+                  SELECT metin1, metin2, benzerlik_orani
+                  FROM MetinBenzerlik
+                  ORDER BY rowid DESC LIMIT 1
                   ''')
 
     print("--- Sørensen-Dice Metin Benzerlik Hesaplayıcı ---")
