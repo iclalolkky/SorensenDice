@@ -1,15 +1,19 @@
 import sqlite3
 #Sorensen-Dice Benzerligi
 def sorensen_dice_benzerligi(metin1, metin2):
-    # Kucuk harfe cevirip kelime kümelerini olustur
-    kume1 = set(metin1.lower())
-    kume2 = set(metin2.lower())
+    # Kucuk harfe cevir
+    m1 = metin1.lower()
+    m2 = metin2.lower()
 
-    # Metin bos girilirse sifira bolunme hatasini engelle
-    if len(kume1) == 0 and len(kume2) == 0:
-        return 0.0
+    # Metin 2 harften kisaysa esitlik kontrolu
+    if len(m1) < 2 or len(m2) < 2:
+        return 1.0 if m1 == m2 else 0.0
 
-    # Ortak kume sayisi
+    # Metni ikili harf gruplarına (bi-gram) ayir, kume oluşstur
+    kume1 = set(m1[i:i+2] for i in range(len(m1)-1))
+    kume2 = set(m2[i:i+2] for i in range(len(m2)-1))
+
+    # Ortak ikili grup sayısı
     kesisim_sayisi = len(kume1.intersection(kume2))
 
     # Formul: (2 * kesisim_sayisi) / (kume1 + kume2)
